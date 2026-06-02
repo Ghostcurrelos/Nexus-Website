@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Simulador de Vídeo Promocional Viral</title>
+    <meta name="description" content="Visualizador interativo do anúncio viral da Nexus Serviços e Ebook. Veja a ritmo, legendas e cortes em tempo real.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-base: #07040d;
+            --bg-card: #120b24;
+            --neon-cyan: #00f0ff;
+            --neon-purple: #bd00ff;
+            --neon-magenta: #ff007a;
+            --gold: #d4af37;
+            --text-primary: #ffffff;
+            --text-muted: #8c82a6;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Decorative Background Elements */
+        .glow-1 {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(189, 0, 255, 0.15) 0%, transparent 70%);
+            filter: blur(80px);
+            z-index: -1;
+        }
+
+        .glow-2 {
+            position: absolute;
+            bottom: 10%;
+            right: 10%;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, transparent 70%);
+            filter: blur(80px);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 50px;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* Header Info */
+        .promo-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(189, 0, 255, 0.1);
+            border: 1px solid rgba(189, 0, 255, 0.3);
+            padding: 6px 14px;
+            border-radius: 99px;
+            align-self: flex-start;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .badge-text {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ffffff 30%, var(--neon-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.desc {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .guide-box {
+            background: var(--bg-card);
+            border: 1px solid rgba(189, 0, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .guide-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .guide-item {
+            display: flex;
+            gap: 12px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .guide-icon {
+            color: var(--neon-cyan);
+            margin-top: 2px;
+        }
+
+        /* 9:16 Video Player Container */
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .smartphone-shell {
+            width: 320px;
+            height: 640px;
+            background: #000000;
+            border: 10px solid #1c1c1e;
+            border-radius: 40px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(189, 0, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-color: #2c2c2e;
+        }
+
+        .camera-notch {
+            width: 110px;
+            height: 25px;
+            background: #2c2c2e;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+
+        /* Video Screen Viewport */
+        .screen {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: #05020a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Scene Slides */
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .scene.active {
+            display: flex;
+            animation: sceneEntrance 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes sceneEntrance {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Captions Layer */
+        .caption-box {
+            position: absolute;
+            bottom: 120px;
+            width: 90%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .caption-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            line-height: 1.3;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+            text-transform: uppercase;
+            text-align: center;
+            animation: textPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes textPop {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Individual Scene Visuals */
+        .scene-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            filter: blur(2px);
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(189,0,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(189,0,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 2;
+        }
+
+        .scene-visual {
+            z-index: 5;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* Animations & Shapes for Slides */
+        .floating-icon {
+            font-size: 4rem;
+            color: var(--neon-cyan);
+            filter: drop-shadow(0 0 15px var(--neon-cyan));
+            animation: floatShape 2s ease-in-out infinite alternate;
+        }
+
+        .wobble-face {
+            font-size: 5rem;
+            animation: wobble 0.5s ease-in-out infinite alternate;
+        }
+
+        .kindle-cover {
+            width: 130px;
+            height: 190px;
+            background-color: #120b24;
+            border: 2.5px solid var(--neon-cyan);
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0, 240, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: coverRotate 4s ease-in-out infinite alternate;
+        }
+
+        .kindle-cover::before {
+            content: 'IA NO TRABALHO';
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 0.75rem;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .services-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--neon-purple) 0%, transparent 70%);
+            border: 3.5px dashed var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotateCircle 10s linear infinite;
+        }
+
+        .services-logo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: logoBounce 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatShape {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-15px); }
+        }
+
+        @keyframes wobble {
+            0% { transform: rotate(-5deg) scale(0.95); }
+            100% { transform: rotate(5deg) scale(1.05); }
+        }
+
+        @keyframes coverRotate {
+            0% { transform: rotate(-3deg) translateY(0px); }
+            100% { transform: rotate(3deg) translateY(-10px); }
+        }
+
+        @keyframes rotateCircle {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes logoBounce {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1.05); }
+        }
+
+        /* Player Controls */
+        .controls-bar {
+            width: 320px;
+            margin-top: 20px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+
+        .buttons-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--neon-cyan);
+        }
+
+        .control-btn.play-btn {
+            background: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(189, 0, 255, 0.4);
+        }
+
+        .control-btn.play-btn:hover {
+            background: var(--neon-cyan);
+            color: var(--bg-base);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+        }
+
+        .time-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .scene-trackers {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .tracker {
+            width: 25px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tracker.active {
+            background: var(--neon-cyan);
+            box-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            align-self: flex-start;
+        }
+
+        .nav-back:hover {
+            color: var(--neon-cyan);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 850px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            body {
+                padding: 20px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+
+    <div class="container">
+        <!-- Text details -->
+        <div class="promo-info">
+            <a href="index.html" class="nav-back">
+                <i data-lucide="arrow-left"></i> Voltar ao Website
+            </a>
+            <div class="badge">
+                <span class="badge-dot"></span>
+                <span class="badge-text">Simulador de Vídeo Ad</span>
+            </div>
+            <h1>Visualiza o Teu Vídeo Viral</h1>
+            <p class="desc">
+                Criei este simulador interativo para te mostrar em tempo real o **ritmo, os cortes visuais e as legendas pop-up** do guião promocional criado para a Nexus Serviços e o teu Ebook.
+            </p>
+
+            <div class="guide-box">
+                <div class="guide-title">
+                    <i data-lucide="sparkles" class="text-neon-cyan"></i> Instruções de Produção
+                </div>
+                <div class="guide-item">
+                    <div class="guide-icon"><i data-lucide="circle-dot"></i></div>
+                    <div><strong>Gancho Rápido</strong>: O vídeo começa imediatamente com movimento e o texto a piscar para evitar que o utilizador passe o ecrã.</div>
+                </div>
+                <div class="guide-item">
+                    <div class="guide-icon"><i data-lucide="circle-dot"></i></div>
+                    <div><strong>Ritmo Dinâmico</strong>: Repara como cada cena dura apenas entre 4 e 7 segundos, mantendo a retenção no nível máximo.</div>
+                </div>
+                <div class="guide-item">
+                    <div class="guide-icon"><i data-lucide="circle-dot"></i></div>
+                    <div><strong>Legendas Centradas</strong>: O texto é curto e surge ao ritmo exato da locução (Voz Off).</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phone Shell Mockup -->
+        <div class="video-container">
+            <div class="smartphone-shell">
+                <div class="camera-notch"></div>
+                <div class="screen">
+                    <div class="grid-overlay"></div>
+
+                    <!-- Slide Scenes -->
+                    <!-- Scene 1 -->
+                    <div class="scene active" id="scene-1" data-duration="4000">
+                        <div class="scene-bg" style="background-color: var(--neon-purple);"></div>
+                        <div class="scene-visual wobble-face">🤯</div>
+                    </div>
+
+                    <!-- Scene 2 -->
+                    <div class="scene" id="scene-2" data-duration="5000">
+                        <div class="scene-bg" style="background-color: var(--neon-magenta);"></div>
+                        <div class="scene-visual">
+                            <i data-lucide="alert-octagon" class="floating-icon" style="color: var(--neon-magenta); filter: drop-shadow(0 0 15px var(--neon-magenta));"></i>
+                        </div>
+                    </div>
+
+                    <!-- Scene 3 -->
+                    <div class="scene" id="scene-3" data-duration="7000">
+                        <div class="scene-bg" style="background-color: var(--neon-cyan);"></div>
+                        <div class="scene-visual kindle-cover"></div>
+                    </div>
+
+                    <!-- Scene 4 -->
+                    <div class="scene" id="scene-4" data-duration="8000">
+                        <div class="scene-bg" style="background-color: var(--neon-purple);"></div>
+                        <div class="scene-visual">
+                            <i data-lucide="trending-up" class="floating-icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Scene 5 -->
+                    <div class="scene" id="scene-5" data-duration="8000">
+                        <div class="scene-bg" style="background-color: #000;"></div>
+                        <div class="scene-visual services-circle">
+                            <i data-lucide="globe" class="floating-icon" style="font-size: 2.5rem; color: #ffffff;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Scene 6 -->
+                    <div class="scene" id="scene-6" data-duration="7000">
+                        <div class="scene-bg" style="background-color: var(--neon-magenta);"></div>
+                        <div class="scene-visual">
+                            <i data-lucide="check-circle" class="floating-icon" style="color: var(--neon-cyan); filter: drop-shadow(0 0 15px var(--neon-cyan));"></i>
+                        </div>
+                    </div>
+
+                    <!-- Scene 7 -->
+                    <div class="scene" id="scene-7" data-duration="9000">
+                        <div class="scene-bg" style="background-color: #07040d;"></div>
+                        <div class="scene-visual">
+                            <img src="assets/logo.png" alt="Nexus Circular Logo" class="services-logo">
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Captions Overlay -->
+                    <div class="caption-box">
+                        <span class="caption-text" id="caption-text-content" style="color: #ffffff;">PREPARADO?</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Playback Controls -->
+            <div class="controls-bar">
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="buttons-row">
+                    <span class="time-label" id="current-time">00:00</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="control-btn" id="btn-prev" title="Cena Anterior"><i data-lucide="skip-back"></i></button>
+                        <button class="control-btn play-btn" id="btn-play" title="Play/Pause"><i data-lucide="play" id="play-icon"></i></button>
+                        <button class="control-btn" id="btn-next" title="Próxima Cena"><i data-lucide="skip-forward"></i></button>
+                    </div>
+                    <span class="time-label" id="duration-time">00:48</span>
+                </div>
+                
+                <!-- Trackers -->
+                <div class="scene-trackers" id="scene-trackers">
+                    <div class="tracker active" data-scene="0"></div>
+                    <div class="tracker" data-scene="1"></div>
+                    <div class="tracker" data-scene="2"></div>
+                    <div class="tracker" data-scene="3"></div>
+                    <div class="tracker" data-scene="4"></div>
+                    <div class="tracker" data-scene="5"></div>
+                    <div class="tracker" data-scene="6"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            // Scenes Data
+            const scenes = [
+                { id: 'scene-1', duration: 4000, color: '#bd00ff',
+                  captions: [
+                      { time: 0, text: 'COMO GANHAR', color: '#ffffff' },
+                      { time: 1500, text: '3 HORAS NO TEU DIA?', color: '#00f0ff' }
+                  ]
+                },
+                { id: 'scene-2', duration: 5000, color: '#ff007a',
+                  captions: [
+                      { time: 0, text: 'TAREFAS CHATAS E REPETITIVAS?', color: '#ffffff' },
+                      { time: 2500, text: 'DESIGN ULTRAPASSADO?', color: '#ff007a' }
+                  ]
+                },
+                { id: 'scene-3', duration: 7000, color: '#00f0ff',
+                  captions: [
+                      { time: 0, text: 'DOMINA O FUTURO DA PRODUÇÃO', color: '#ffffff' },
+                      { time: 3000, text: 'EBOOK "IA NO TRABALHO"', color: '#00f0ff' }
+                  ]
+                },
+                { id: 'scene-4', duration: 8000, color: '#bd00ff',
+                  captions: [
+                      { time: 0, text: '101 PROMPTS REAIS E TESTADOS', color: '#ffffff' },
+                      { time: 3500, text: 'TRABALHA MENOS, VENDE MAIS!', color: '#d4af37' }
+                  ]
+                },
+                { id: 'scene-5', duration: 8000, color: '#000000',
+                  captions: [
+                      { time: 0, text: 'PRECISAS DE DESIGN E WEB?', color: '#ffffff' },
+                      { time: 4000, text: 'NEXUS CRIA O TEU SITE', color: '#00f0ff' }
+                  ]
+                },
+                { id: 'scene-6', duration: 7000, color: '#ff007a',
+                  captions: [
+                      { time: 0, text: 'SUPORTE DEDICADO EM PT-PT', color: '#ffffff' },
+                      { time: 3500, text: 'PEDIDO EM POUCOS CLIQUES', color: '#00f0ff' }
+                  ]
+                },
+                { id: 'scene-7', duration: 9000, color: '#07040d',
+                  captions: [
+                      { time: 0, text: 'ELEVA O TEU NEGÓCIO AGORA!', color: '#ffffff' },
+                      { time: 4000, text: '👉 CLICA NO LINK DA BIO 👈', color: '#d4af37' }
+                  ]
+                }
+            ];
+
+            let activeSceneIndex = 0;
+            let isPlaying = false;
+            let sceneTimer = null;
+            let captionTimer = null;
+            let currentSceneTimeElapsed = 0;
+            let sceneStartTime = 0;
+            let totalTimeElapsed = 0;
+
+            const totalDuration = scenes.reduce((acc, scene) => acc + scene.duration, 0);
+
+            // DOM Elements
+            const playBtn = document.getElementById('btn-play');
+            const playIcon = document.getElementById('play-icon');
+            const prevBtn = document.getElementById('btn-prev');
+            const nextBtn = document.getElementById('btn-next');
+            const progressBar = document.getElementById('progress-bar');
+            const currentTimeLabel = document.getElementById('current-time');
+            const durationTimeLabel = document.getElementById('duration-time');
+            const captionText = document.getElementById('caption-text-content');
+            const trackers = document.querySelectorAll('.tracker');
+
+            // Format milliseconds to MM:SS
+            function formatTime(ms) {
+                const totalSeconds = Math.floor(ms / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            durationTimeLabel.textContent = formatTime(totalDuration);
+
+            function showScene(index) {
+                // Clear active scenes
+                document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
+                trackers.forEach(t => t.classList.remove('active'));
+
+                activeSceneIndex = index;
+                const activeScene = scenes[activeSceneIndex];
+                
+                const sceneElement = document.getElementById(activeScene.id);
+                if (sceneElement) sceneElement.classList.add('active');
+                if (trackers[activeSceneIndex]) trackers[activeSceneIndex].classList.add('active');
+
+                // Reset scene timer parameters
+                currentSceneTimeElapsed = 0;
+                sceneStartTime = Date.now();
+
+                // Load initial caption for this scene
+                showCaptionsForScene(activeSceneIndex);
+                updateProgressBar();
+            }
+
+            function showCaptionsForScene(sceneIndex) {
+                if (captionTimer) clearTimeout(captionTimer);
+                
+                const activeScene = scenes[sceneIndex];
+                const captionContent = activeScene.captions;
+                
+                // Show the very first caption
+                setCaption(captionContent[0].text, captionContent[0].color);
+
+                // If there is a second caption, schedule it
+                if (captionContent.length > 1) {
+                    captionTimer = setTimeout(() => {
+                        setCaption(captionContent[1].text, captionContent[1].color);
+                    }, captionContent[1].time);
+                }
+            }
+
+            function setCaption(text, color) {
+                captionText.textContent = text;
+                captionText.style.color = color || '#ffffff';
+                
+                // Re-trigger animation
+                captionText.style.animation = 'none';
+                captionText.offsetHeight; /* trigger reflow */
+                captionText.style.animation = 'textPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+            }
+
+            function updateProgressBar() {
+                // Calculate total elapsed time up to current scene
+                let elapsedBefore = 0;
+                for (let i = 0; i < activeSceneIndex; i++) {
+                    elapsedBefore += scenes[i].duration;
+                }
+                
+                let currentTotalElapsed = elapsedBefore + currentSceneTimeElapsed;
+                if (currentTotalElapsed > totalDuration) currentTotalElapsed = totalDuration;
+                
+                const percent = (currentTotalElapsed / totalDuration) * 100;
+                progressBar.style.width = `${percent}%`;
+                currentTimeLabel.textContent = formatTime(currentTotalElapsed);
+            }
+
+            function runPlaybackLoop() {
+                if (!isPlaying) return;
+
+                const activeScene = scenes[activeSceneIndex];
+                currentSceneTimeElapsed = Date.now() - sceneStartTime;
+
+                if (currentSceneTimeElapsed >= activeScene.duration) {
+                    // Move to next scene
+                    if (activeSceneIndex < scenes.length - 1) {
+                        showScene(activeSceneIndex + 1);
+                    } else {
+                        // Loop back to start
+                        showScene(0);
+                    }
+                } else {
+                    updateProgressBar();
+                    requestAnimationFrame(runPlaybackLoop);
+                }
+            }
+
+            function play() {
+                isPlaying = true;
+                playIcon.setAttribute('data-lucide', 'pause');
+                lucide.createIcons();
+                sceneStartTime = Date.now() - currentSceneTimeElapsed;
+                
+                // Resume caption timers
+                const activeScene = scenes[activeSceneIndex];
+                showCaptionsForScene(activeSceneIndex);
+
+                runPlaybackLoop();
+            }
+
+            function pause() {
+                isPlaying = false;
+                playIcon.setAttribute('data-lucide', 'play');
+                lucide.createIcons();
+                if (captionTimer) clearTimeout(captionTimer);
+            }
+
+            playBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    pause();
+                } else {
+                    play();
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                const wasPlaying = isPlaying;
+                pause();
+                const targetIndex = activeSceneIndex > 0 ? activeSceneIndex - 1 : scenes.length - 1;
+                showScene(targetIndex);
+                if (wasPlaying) play();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                const wasPlaying = isPlaying;
+                pause();
+                const targetIndex = activeSceneIndex < scenes.length - 1 ? activeSceneIndex + 1 : 0;
+                showScene(targetIndex);
+                if (wasPlaying) play();
+            });
+
+            // Click tracker to jump to scene
+            trackers.forEach(tracker => {
+                tracker.addEventListener('click', () => {
+                    const targetIndex = parseInt(tracker.getAttribute('data-scene'), 10);
+                    const wasPlaying = isPlaying;
+                    pause();
+                    showScene(targetIndex);
+                    if (wasPlaying) play();
+                });
+            });
+
+            // Initialize Player
+            showScene(0);
+        });
+    </script>
+</body>
+</html>
