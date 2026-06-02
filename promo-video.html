@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Simulador de Vídeo Promocional Viral</title>
-    <meta name="description" content="Visualizador interativo do anúncio viral da Nexus Serviços e Ebook. Veja a ritmo, legendas e cortes em tempo real.">
+    <title>Nexus | Exportador de Vídeo Promocional</title>
+    <meta name="description" content="Exportador interativo do anúncio viral da Nexus Serviços. Grave e descarregue em formato vertical HD.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +47,7 @@
             position: relative;
         }
 
-        /* Decorative Background Elements */
+        /* Background Effects */
         .glow-1 {
             position: absolute;
             top: 10%;
@@ -82,7 +82,6 @@
             z-index: 10;
         }
 
-        /* Header Info */
         .promo-info {
             display: flex;
             flex-direction: column;
@@ -132,9 +131,11 @@
             line-height: 1.6;
         }
 
-        .guide-box {
+        /* Export Panel */
+        .export-panel {
             background: var(--bg-card);
-            border: 1px solid rgba(189, 0, 255, 0.2);
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 0 20px rgba(189, 0, 255, 0.2);
             border-radius: 16px;
             padding: 24px;
             display: flex;
@@ -142,7 +143,7 @@
             gap: 15px;
         }
 
-        .guide-title {
+        .export-title {
             font-size: 1.1rem;
             font-weight: 700;
             color: #ffffff;
@@ -151,20 +152,46 @@
             gap: 10px;
         }
 
-        .guide-item {
+        .btn-export {
             display: flex;
-            gap: 12px;
-            font-size: 0.9rem;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-magenta) 100%);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            font-size: 1.05rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(189, 0, 255, 0.4);
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 0, 122, 0.6);
+            filter: brightness(1.1);
+        }
+
+        .btn-export:disabled {
+            background: #2a223d;
             color: var(--text-muted);
-            line-height: 1.4;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
 
-        .guide-icon {
+        .status-msg {
+            font-size: 0.9rem;
             color: var(--neon-cyan);
-            margin-top: 2px;
+            text-align: center;
+            font-weight: 600;
         }
 
-        /* 9:16 Video Player Container */
+        /* Video Player Container */
         .video-container {
             display: flex;
             flex-direction: column;
@@ -174,7 +201,7 @@
 
         .smartphone-shell {
             width: 320px;
-            height: 640px;
+            height: 620px;
             background: #000000;
             border: 10px solid #1c1c1e;
             border-radius: 40px;
@@ -199,190 +226,23 @@
             z-index: 100;
         }
 
-        /* Video Screen Viewport */
-        .screen {
+        /* Viewport Canvas wrapper */
+        .screen-wrapper {
             flex-grow: 1;
             width: 100%;
             height: 100%;
             position: relative;
-            background-color: #05020a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            background-color: #000000;
         }
 
-        /* Scene Slides */
-        .scene {
-            position: absolute;
-            top: 0;
-            left: 0;
+        canvas {
             width: 100%;
             height: 100%;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            text-align: center;
-            z-index: 10;
+            display: block;
+            object-fit: cover;
         }
 
-        .scene.active {
-            display: flex;
-            animation: sceneEntrance 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @keyframes sceneEntrance {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        /* Captions Layer */
-        .caption-box {
-            position: absolute;
-            bottom: 120px;
-            width: 90%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 30;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .caption-text {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 800;
-            line-height: 1.3;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
-            text-transform: uppercase;
-            text-align: center;
-            animation: textPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes textPop {
-            0% { transform: scale(0.85); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Individual Scene Visuals */
-        .scene-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15;
-            filter: blur(2px);
-        }
-
-        .grid-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: linear-gradient(rgba(189,0,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(189,0,255,0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-            z-index: 2;
-        }
-
-        .scene-visual {
-            z-index: 5;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        /* Animations & Shapes for Slides */
-        .floating-icon {
-            font-size: 4rem;
-            color: var(--neon-cyan);
-            filter: drop-shadow(0 0 15px var(--neon-cyan));
-            animation: floatShape 2s ease-in-out infinite alternate;
-        }
-
-        .wobble-face {
-            font-size: 5rem;
-            animation: wobble 0.5s ease-in-out infinite alternate;
-        }
-
-        .kindle-cover {
-            width: 130px;
-            height: 190px;
-            background-color: #120b24;
-            border: 2.5px solid var(--neon-cyan);
-            border-radius: 8px;
-            box-shadow: 0 15px 30px rgba(0, 240, 255, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            animation: coverRotate 4s ease-in-out infinite alternate;
-        }
-
-        .kindle-cover::before {
-            content: 'IA NO TRABALHO';
-            font-family: 'Outfit', sans-serif;
-            font-weight: 800;
-            font-size: 0.75rem;
-            color: #ffffff;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .services-circle {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--neon-purple) 0%, transparent 70%);
-            border: 3.5px dashed var(--neon-cyan);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: rotateCircle 10s linear infinite;
-        }
-
-        .services-logo {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            animation: logoBounce 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes floatShape {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-15px); }
-        }
-
-        @keyframes wobble {
-            0% { transform: rotate(-5deg) scale(0.95); }
-            100% { transform: rotate(5deg) scale(1.05); }
-        }
-
-        @keyframes coverRotate {
-            0% { transform: rotate(-3deg) translateY(0px); }
-            100% { transform: rotate(3deg) translateY(-10px); }
-        }
-
-        @keyframes rotateCircle {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes logoBounce {
-            0% { transform: scale(0.9); }
-            100% { transform: scale(1.05); }
-        }
-
-        /* Player Controls */
+        /* Playback Controls */
         .controls-bar {
             width: 320px;
             margin-top: 20px;
@@ -492,7 +352,6 @@
             color: var(--neon-cyan);
         }
 
-        /* Responsive Design */
         @media (max-width: 850px) {
             .container {
                 grid-template-columns: 1fr;
@@ -510,104 +369,38 @@
     <div class="glow-2"></div>
 
     <div class="container">
-        <!-- Text details -->
+        <!-- Text info panel -->
         <div class="promo-info">
             <a href="index.html" class="nav-back">
                 <i data-lucide="arrow-left"></i> Voltar ao Website
             </a>
             <div class="badge">
                 <span class="badge-dot"></span>
-                <span class="badge-text">Simulador de Vídeo Ad</span>
+                <span class="badge-text">Exportador de Vídeo 1080p</span>
             </div>
-            <h1>Visualiza o Teu Vídeo Viral</h1>
+            <h1>Cria & Exporta o Teu Vídeo</h1>
             <p class="desc">
-                Criei este simulador interativo para te mostrar em tempo real o **ritmo, os cortes visuais e as legendas pop-up** do guião promocional criado para a Nexus Serviços e o teu Ebook.
+                Este simulador carrega as tuas **imagens reais** (Logótipo e Capa do Ebook) e renderiza o vídeo na resolução vertical nativa de **1080x1920 píxeis**. Podes clicar para descarregar o ficheiro `.webm` final e adicionares a música!
             </p>
 
-            <div class="guide-box">
-                <div class="guide-title">
-                    <i data-lucide="sparkles" class="text-neon-cyan"></i> Instruções de Produção
+            <div class="export-panel">
+                <div class="export-title">
+                    <i data-lucide="video" class="text-neon-cyan"></i> Exportação em Tempo Real
                 </div>
-                <div class="guide-item">
-                    <div class="guide-icon"><i data-lucide="circle-dot"></i></div>
-                    <div><strong>Gancho Rápido</strong>: O vídeo começa imediatamente com movimento e o texto a piscar para evitar que o utilizador passe o ecrã.</div>
-                </div>
-                <div class="guide-item">
-                    <div class="guide-icon"><i data-lucide="circle-dot"></i></div>
-                    <div><strong>Ritmo Dinâmico</strong>: Repara como cada cena dura apenas entre 4 e 7 segundos, mantendo a retenção no nível máximo.</div>
-                </div>
-                <div class="guide-item">
-                    <div class="guide-icon"><i data-lucide="circle-dot"></i></div>
-                    <div><strong>Legendas Centradas</strong>: O texto é curto e surge ao ritmo exato da locução (Voz Off).</div>
-                </div>
+                <button class="btn-export" id="btn-export">
+                    <i data-lucide="download"></i> Gravar & Exportar Vídeo HD
+                </button>
+                <div class="status-msg" id="status-msg" style="display: none;">Inicializando gravação...</div>
             </div>
         </div>
 
-        <!-- Phone Shell Mockup -->
+        <!-- Phone view with Canvas -->
         <div class="video-container">
             <div class="smartphone-shell">
                 <div class="camera-notch"></div>
-                <div class="screen">
-                    <div class="grid-overlay"></div>
-
-                    <!-- Slide Scenes -->
-                    <!-- Scene 1 -->
-                    <div class="scene active" id="scene-1" data-duration="4000">
-                        <div class="scene-bg" style="background-color: var(--neon-purple);"></div>
-                        <div class="scene-visual wobble-face">🤯</div>
-                    </div>
-
-                    <!-- Scene 2 -->
-                    <div class="scene" id="scene-2" data-duration="5000">
-                        <div class="scene-bg" style="background-color: var(--neon-magenta);"></div>
-                        <div class="scene-visual">
-                            <i data-lucide="alert-octagon" class="floating-icon" style="color: var(--neon-magenta); filter: drop-shadow(0 0 15px var(--neon-magenta));"></i>
-                        </div>
-                    </div>
-
-                    <!-- Scene 3 -->
-                    <div class="scene" id="scene-3" data-duration="7000">
-                        <div class="scene-bg" style="background-color: var(--neon-cyan);"></div>
-                        <div class="scene-visual kindle-cover"></div>
-                    </div>
-
-                    <!-- Scene 4 -->
-                    <div class="scene" id="scene-4" data-duration="8000">
-                        <div class="scene-bg" style="background-color: var(--neon-purple);"></div>
-                        <div class="scene-visual">
-                            <i data-lucide="trending-up" class="floating-icon"></i>
-                        </div>
-                    </div>
-
-                    <!-- Scene 5 -->
-                    <div class="scene" id="scene-5" data-duration="8000">
-                        <div class="scene-bg" style="background-color: #000;"></div>
-                        <div class="scene-visual services-circle">
-                            <i data-lucide="globe" class="floating-icon" style="font-size: 2.5rem; color: #ffffff;"></i>
-                        </div>
-                    </div>
-
-                    <!-- Scene 6 -->
-                    <div class="scene" id="scene-6" data-duration="7000">
-                        <div class="scene-bg" style="background-color: var(--neon-magenta);"></div>
-                        <div class="scene-visual">
-                            <i data-lucide="check-circle" class="floating-icon" style="color: var(--neon-cyan); filter: drop-shadow(0 0 15px var(--neon-cyan));"></i>
-                        </div>
-                    </div>
-
-                    <!-- Scene 7 -->
-                    <div class="scene" id="scene-7" data-duration="9000">
-                        <div class="scene-bg" style="background-color: #07040d;"></div>
-                        <div class="scene-visual">
-                            <img src="assets/logo.png" alt="Nexus Circular Logo" class="services-logo">
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Captions Overlay -->
-                    <div class="caption-box">
-                        <span class="caption-text" id="caption-text-content" style="color: #ffffff;">PREPARADO?</span>
-                    </div>
-
+                <div class="screen-wrapper">
+                    <!-- High-Res Rendering Canvas -->
+                    <canvas id="videoCanvas" width="1080" height="1920"></canvas>
                 </div>
             </div>
 
@@ -646,45 +439,60 @@
                 lucide.createIcons();
             }
 
-            // Scenes Data
+            // Real Images Loading
+            const logoImg = new Image();
+            let logoImgLoaded = false;
+            logoImg.onload = () => { logoImgLoaded = true; triggerRedraw(); };
+            logoImg.src = 'assets/logo.png';
+
+            const coverImg = new Image();
+            let coverImgLoaded = false;
+            coverImg.onload = () => { coverImgLoaded = true; triggerRedraw(); };
+            coverImg.src = 'assets/ebook_cover.jpg';
+
+            // Canvas & Context Setup
+            const canvas = document.getElementById('videoCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Video Storyboard Structure
             const scenes = [
-                { id: 'scene-1', duration: 4000, color: '#bd00ff',
+                { id: 'scene-1', duration: 4000, bgColor: '#0e081c', glowColor: 'rgba(189, 0, 255, 0.4)',
                   captions: [
                       { time: 0, text: 'COMO GANHAR', color: '#ffffff' },
-                      { time: 1500, text: '3 HORAS NO TEU DIA?', color: '#00f0ff' }
+                      { time: 1800, text: '3 HORAS NO TEU DIA?', color: '#00f0ff' }
                   ]
                 },
-                { id: 'scene-2', duration: 5000, color: '#ff007a',
+                { id: 'scene-2', duration: 5000, bgColor: '#160f29', glowColor: 'rgba(255, 0, 122, 0.4)',
                   captions: [
-                      { time: 0, text: 'TAREFAS CHATAS E REPETITIVAS?', color: '#ffffff' },
-                      { time: 2500, text: 'DESIGN ULTRAPASSADO?', color: '#ff007a' }
+                      { time: 0, text: 'TAREFAS REPETITIVAS?', color: '#ffffff' },
+                      { time: 2500, text: 'WEBSITES E DESIGN FEIO?', color: '#ff007a' }
                   ]
                 },
-                { id: 'scene-3', duration: 7000, color: '#00f0ff',
+                { id: 'scene-3', duration: 7000, bgColor: '#07040d', glowColor: 'rgba(0, 240, 255, 0.4)',
                   captions: [
-                      { time: 0, text: 'DOMINA O FUTURO DA PRODUÇÃO', color: '#ffffff' },
-                      { time: 3000, text: 'EBOOK "IA NO TRABALHO"', color: '#00f0ff' }
+                      { time: 0, text: 'DOMINA O FUTURO COM IA', color: '#ffffff' },
+                      { time: 3500, text: 'EBOOK "IA NO TRABALHO"', color: '#00f0ff' }
                   ]
                 },
-                { id: 'scene-4', duration: 8000, color: '#bd00ff',
+                { id: 'scene-4', duration: 8000, bgColor: '#0e081c', glowColor: 'rgba(189, 0, 255, 0.35)',
                   captions: [
-                      { time: 0, text: '101 PROMPTS REAIS E TESTADOS', color: '#ffffff' },
-                      { time: 3500, text: 'TRABALHA MENOS, VENDE MAIS!', color: '#d4af37' }
+                      { time: 0, text: '101 PROMPTS E ESTRATÉGIAS', color: '#ffffff' },
+                      { time: 4000, text: 'TRABALHA MENOS, VENDE MAIS!', color: '#d4af37' }
                   ]
                 },
-                { id: 'scene-5', duration: 8000, color: '#000000',
+                { id: 'scene-5', duration: 8000, bgColor: '#050209', glowColor: 'rgba(0, 240, 255, 0.3)',
                   captions: [
-                      { time: 0, text: 'PRECISAS DE DESIGN E WEB?', color: '#ffffff' },
-                      { time: 4000, text: 'NEXUS CRIA O TEU SITE', color: '#00f0ff' }
+                      { time: 0, text: 'PROCURAS DESENVOLVIMENTO WEB?', color: '#ffffff' },
+                      { time: 4000, text: 'NEXUS CRIA O TEU WEBSITE', color: '#00f0ff' }
                   ]
                 },
-                { id: 'scene-6', duration: 7000, color: '#ff007a',
+                { id: 'scene-6', duration: 7000, bgColor: '#120b24', glowColor: 'rgba(255, 0, 122, 0.35)',
                   captions: [
-                      { time: 0, text: 'SUPORTE DEDICADO EM PT-PT', color: '#ffffff' },
-                      { time: 3500, text: 'PEDIDO EM POUCOS CLIQUES', color: '#00f0ff' }
+                      { time: 0, text: 'SUPORTE TOTAL EM PT-PT', color: '#ffffff' },
+                      { time: 3500, text: 'PEDIDO EM POUCOS SEGUNDOS', color: '#00f0ff' }
                   ]
                 },
-                { id: 'scene-7', duration: 9000, color: '#07040d',
+                { id: 'scene-7', duration: 9000, bgColor: '#07040d', glowColor: 'rgba(189, 0, 255, 0.35)',
                   captions: [
                       { time: 0, text: 'ELEVA O TEU NEGÓCIO AGORA!', color: '#ffffff' },
                       { time: 4000, text: '👉 CLICA NO LINK DA BIO 👈', color: '#d4af37' }
@@ -692,17 +500,19 @@
                 }
             ];
 
-            let activeSceneIndex = 0;
-            let isPlaying = false;
-            let sceneTimer = null;
-            let captionTimer = null;
-            let currentSceneTimeElapsed = 0;
-            let sceneStartTime = 0;
-            let totalTimeElapsed = 0;
-
             const totalDuration = scenes.reduce((acc, scene) => acc + scene.duration, 0);
 
-            // DOM Elements
+            // Playback variables
+            let activeSceneIndex = 0;
+            let isPlaying = false;
+            let currentSceneTimeElapsed = 0;
+            let sceneStartTime = 0;
+            let lastFrameTime = 0;
+
+            // Recording state
+            let isRecording = false;
+
+            // DOM elements
             const playBtn = document.getElementById('btn-play');
             const playIcon = document.getElementById('play-icon');
             const prevBtn = document.getElementById('btn-prev');
@@ -710,10 +520,12 @@
             const progressBar = document.getElementById('progress-bar');
             const currentTimeLabel = document.getElementById('current-time');
             const durationTimeLabel = document.getElementById('duration-time');
-            const captionText = document.getElementById('caption-text-content');
             const trackers = document.querySelectorAll('.tracker');
+            const btnExport = document.getElementById('btn-export');
+            const statusMsg = document.getElementById('status-msg');
 
-            // Format milliseconds to MM:SS
+            durationTimeLabel.textContent = formatTime(totalDuration);
+
             function formatTime(ms) {
                 const totalSeconds = Math.floor(ms / 1000);
                 const minutes = Math.floor(totalSeconds / 60);
@@ -721,58 +533,239 @@
                 return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
 
-            durationTimeLabel.textContent = formatTime(totalDuration);
-
-            function showScene(index) {
-                // Clear active scenes
-                document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
-                trackers.forEach(t => t.classList.remove('active'));
-
-                activeSceneIndex = index;
-                const activeScene = scenes[activeSceneIndex];
-                
-                const sceneElement = document.getElementById(activeScene.id);
-                if (sceneElement) sceneElement.classList.add('active');
-                if (trackers[activeSceneIndex]) trackers[activeSceneIndex].classList.add('active');
-
-                // Reset scene timer parameters
-                currentSceneTimeElapsed = 0;
-                sceneStartTime = Date.now();
-
-                // Load initial caption for this scene
-                showCaptionsForScene(activeSceneIndex);
-                updateProgressBar();
-            }
-
-            function showCaptionsForScene(sceneIndex) {
-                if (captionTimer) clearTimeout(captionTimer);
-                
-                const activeScene = scenes[sceneIndex];
-                const captionContent = activeScene.captions;
-                
-                // Show the very first caption
-                setCaption(captionContent[0].text, captionContent[0].color);
-
-                // If there is a second caption, schedule it
-                if (captionContent.length > 1) {
-                    captionTimer = setTimeout(() => {
-                        setCaption(captionContent[1].text, captionContent[1].color);
-                    }, captionContent[1].time);
+            function triggerRedraw() {
+                if (!isPlaying && !isRecording) {
+                    drawFrame(0);
                 }
             }
 
-            function setCaption(text, color) {
-                captionText.textContent = text;
-                captionText.style.color = color || '#ffffff';
-                
-                // Re-trigger animation
-                captionText.style.animation = 'none';
-                captionText.offsetHeight; /* trigger reflow */
-                captionText.style.animation = 'textPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+            // High-Resolution 1080x1920 Frame Renderer
+            function drawFrame(time) {
+                ctx.clearRect(0, 0, 1080, 1920);
+
+                let sceneIndex = 0;
+                let sceneTime = time;
+                let elapsed = 0;
+
+                for (let i = 0; i < scenes.length; i++) {
+                    if (time >= elapsed && time < elapsed + scenes[i].duration) {
+                        sceneIndex = i;
+                        sceneTime = time - elapsed;
+                        break;
+                    }
+                    elapsed += scenes[i].duration;
+                }
+
+                if (time >= totalDuration) {
+                    sceneIndex = scenes.length - 1;
+                    sceneTime = scenes[scenes.length - 1].duration;
+                }
+
+                const scene = scenes[sceneIndex];
+
+                // 1. Draw solid background
+                ctx.fillStyle = scene.bgColor;
+                ctx.fillRect(0, 0, 1080, 1920);
+
+                // 2. Draw modern diagonal line stripes
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
+                ctx.lineWidth = 4;
+                const stripeSpacing = 60;
+                for (let offset = -1920; offset < 1080; offset += stripeSpacing) {
+                    ctx.beginPath();
+                    ctx.moveTo(offset, 0);
+                    ctx.lineTo(offset + 1920, 1920);
+                    ctx.stroke();
+                }
+
+                // 3. Draw grid lines overlay
+                ctx.strokeStyle = 'rgba(189, 0, 255, 0.03)';
+                ctx.lineWidth = 2;
+                const gridSpacing = 120;
+                for (let x = 0; x < 1080; x += gridSpacing) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, 1920);
+                    ctx.stroke();
+                }
+                for (let y = 0; y < 1920; y += gridSpacing) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(1080, y);
+                    ctx.stroke();
+                }
+
+                // 4. Draw central radial light glow
+                let gradient = ctx.createRadialGradient(540, 960, 100, 540, 960, 800);
+                gradient.addColorStop(0, scene.glowColor);
+                gradient.addColorStop(1, 'transparent');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 1080, 1920);
+
+                // 5. Draw Scene-specific Visual Assets
+                if (sceneIndex === 0) {
+                    // Scene 1: Wobble emoji
+                    ctx.font = '280px Outfit';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    let offset = Math.sin(sceneTime * 0.01) * 12;
+                    ctx.save();
+                    ctx.translate(540, 750);
+                    ctx.rotate(offset * Math.PI / 180);
+                    ctx.fillText('🤯', 0, 0);
+                    ctx.restore();
+                } 
+                else if (sceneIndex === 1) {
+                    // Scene 2: Alert pulse
+                    ctx.font = '280px Outfit';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    let scale = 1.0 + Math.sin(sceneTime * 0.012) * 0.08;
+                    ctx.save();
+                    ctx.translate(540, 750);
+                    ctx.scale(scale, scale);
+                    ctx.fillText('📉', 0, 0);
+                    ctx.restore();
+                } 
+                else if (sceneIndex === 2) {
+                    // Scene 3: Actual Ebook Cover Image Drawing
+                    if (coverImgLoaded) {
+                        ctx.save();
+                        ctx.translate(540, 780);
+                        let angle = Math.sin(sceneTime * 0.001) * 3 * Math.PI / 180;
+                        ctx.rotate(angle);
+                        
+                        // Add shadow aura glow
+                        ctx.shadowColor = 'rgba(0, 240, 255, 0.4)';
+                        ctx.shadowBlur = 50;
+                        
+                        // Render Cover (420x600 px)
+                        ctx.drawImage(coverImg, -210, -300, 420, 600);
+                        ctx.restore();
+                    } else {
+                        // Fallback text card
+                        ctx.fillStyle = '#120b24';
+                        ctx.strokeStyle = '#00f0ff';
+                        ctx.lineWidth = 10;
+                        ctx.fillRect(340, 480, 400, 600);
+                        ctx.strokeRect(340, 480, 400, 600);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 50px Space Grotesk';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('IA NO', 540, 740);
+                        ctx.fillText('TRABALHO', 540, 820);
+                    }
+                } 
+                else if (sceneIndex === 3) {
+                    // Scene 4: Benefits trending icon
+                    ctx.font = '280px Outfit';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    let bounce = Math.sin(sceneTime * 0.005) * 20;
+                    ctx.fillText('🚀', 540, 750 + bounce);
+                } 
+                else if (sceneIndex === 4) {
+                    // Scene 5: Rotating Globe
+                    ctx.font = '280px Outfit';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    let rotate = (sceneTime * 0.0008) % (Math.PI * 2);
+                    ctx.save();
+                    ctx.translate(540, 750);
+                    ctx.rotate(rotate);
+                    ctx.fillText('🌐', 0, 0);
+                    ctx.restore();
+                } 
+                else if (sceneIndex === 5) {
+                    // Scene 6: Verified Check
+                    ctx.font = '280px Outfit';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    let grow = 1.0 + Math.sin(sceneTime * 0.008) * 0.06;
+                    ctx.save();
+                    ctx.translate(540, 750);
+                    ctx.scale(grow, grow);
+                    ctx.fillText('✅', 0, 0);
+                    ctx.restore();
+                } 
+                else if (sceneIndex === 6) {
+                    // Scene 7: Real circular logo
+                    if (logoImgLoaded) {
+                        ctx.save();
+                        ctx.translate(540, 750);
+                        let pulse = 1.0 + Math.sin(sceneTime * 0.004) * 0.04;
+                        ctx.scale(pulse, pulse);
+
+                        // Clip to circle
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 200, 0, Math.PI * 2);
+                        ctx.closePath();
+                        ctx.clip();
+
+                        ctx.drawImage(logoImg, -200, -200, 400, 400);
+                        ctx.restore();
+
+                        // Circular border line matching gold tone
+                        ctx.strokeStyle = '#d4af37';
+                        ctx.lineWidth = 14;
+                        ctx.beginPath();
+                        ctx.arc(540, 750, 202, 0, Math.PI * 2);
+                        ctx.stroke();
+                    } else {
+                        ctx.fillStyle = '#d4af37';
+                        ctx.beginPath();
+                        ctx.arc(540, 750, 180, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                // 6. Render synced text captions
+                let activeCaption = scene.captions[0];
+                for (let c = 0; c < scene.captions.length; c++) {
+                    if (sceneTime >= scene.captions[c].time) {
+                        activeCaption = scene.captions[c];
+                    }
+                }
+
+                if (activeCaption) {
+                    // Black backing bar for legibility
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+                    ctx.fillRect(80, 1400, 920, 240);
+
+                    // Text drawing
+                    ctx.font = 'bold 95px Outfit';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+                    ctx.shadowBlur = 24;
+                    ctx.shadowOffsetX = 4;
+                    ctx.shadowOffsetY = 4;
+                    
+                    ctx.fillStyle = activeCaption.color;
+                    ctx.fillText(activeCaption.text, 540, 1520);
+                    
+                    // Reset shadows
+                    ctx.shadowBlur = 0;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                }
+            }
+
+            function showScene(index) {
+                trackers.forEach(t => t.classList.remove('active'));
+
+                activeSceneIndex = index;
+                if (trackers[activeSceneIndex]) trackers[activeSceneIndex].classList.add('active');
+
+                currentSceneTimeElapsed = 0;
+                sceneStartTime = Date.now();
+                lastFrameTime = Date.now();
+
+                updateProgressBar();
             }
 
             function updateProgressBar() {
-                // Calculate total elapsed time up to current scene
                 let elapsedBefore = 0;
                 for (let i = 0; i < activeSceneIndex; i++) {
                     elapsedBefore += scenes[i].duration;
@@ -784,26 +777,32 @@
                 const percent = (currentTotalElapsed / totalDuration) * 100;
                 progressBar.style.width = `${percent}%`;
                 currentTimeLabel.textContent = formatTime(currentTotalElapsed);
+
+                // Render current frame
+                drawFrame(currentTotalElapsed);
             }
 
+            // Normal Playback Loop
             function runPlaybackLoop() {
-                if (!isPlaying) return;
+                if (!isPlaying || isRecording) return;
 
                 const activeScene = scenes[activeSceneIndex];
-                currentSceneTimeElapsed = Date.now() - sceneStartTime;
+                const now = Date.now();
+                const delta = now - lastFrameTime;
+                lastFrameTime = now;
+
+                currentSceneTimeElapsed += delta;
 
                 if (currentSceneTimeElapsed >= activeScene.duration) {
-                    // Move to next scene
                     if (activeSceneIndex < scenes.length - 1) {
                         showScene(activeSceneIndex + 1);
                     } else {
-                        // Loop back to start
                         showScene(0);
                     }
                 } else {
                     updateProgressBar();
-                    requestAnimationFrame(runPlaybackLoop);
                 }
+                requestAnimationFrame(runPlaybackLoop);
             }
 
             function play() {
@@ -811,11 +810,7 @@
                 playIcon.setAttribute('data-lucide', 'pause');
                 lucide.createIcons();
                 sceneStartTime = Date.now() - currentSceneTimeElapsed;
-                
-                // Resume caption timers
-                const activeScene = scenes[activeSceneIndex];
-                showCaptionsForScene(activeSceneIndex);
-
+                lastFrameTime = Date.now();
                 runPlaybackLoop();
             }
 
@@ -823,7 +818,6 @@
                 isPlaying = false;
                 playIcon.setAttribute('data-lucide', 'play');
                 lucide.createIcons();
-                if (captionTimer) clearTimeout(captionTimer);
             }
 
             playBtn.addEventListener('click', () => {
@@ -850,7 +844,6 @@
                 if (wasPlaying) play();
             });
 
-            // Click tracker to jump to scene
             trackers.forEach(tracker => {
                 tracker.addEventListener('click', () => {
                     const targetIndex = parseInt(tracker.getAttribute('data-scene'), 10);
@@ -861,7 +854,87 @@
                 });
             });
 
-            // Initialize Player
+            // --- 1080p MediaRecorder Export System ---
+            btnExport.addEventListener('click', () => {
+                if (isRecording) return;
+                
+                pause();
+                isRecording = true;
+                btnExport.disabled = true;
+                statusMsg.style.display = 'block';
+                statusMsg.textContent = 'A preparar gravação...';
+
+                // Force layout check & image draw
+                drawFrame(0);
+
+                // Set up recorder stream at 30 FPS
+                const stream = canvas.captureStream(30);
+                
+                let options = { mimeType: 'video/webm;codecs=vp9' };
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    options = { mimeType: 'video/webm;codecs=vp8' };
+                }
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    options = { mimeType: 'video/webm' };
+                }
+
+                const chunks = [];
+                const recorder = new MediaRecorder(stream, options);
+
+                recorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) chunks.push(e.data);
+                };
+
+                recorder.onstop = () => {
+                    statusMsg.textContent = 'A compilar ficheiro de vídeo...';
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'nexus_promo_1080x1920.webm';
+                    a.click();
+
+                    statusMsg.textContent = 'Vídeo exportado com sucesso! 🎉';
+                    btnExport.disabled = false;
+                    isRecording = false;
+                    
+                    setTimeout(() => {
+                        statusMsg.style.display = 'none';
+                    }, 4000);
+
+                    // Reset back to normal view
+                    showScene(0);
+                };
+
+                // Begin Recording Loop
+                recorder.start();
+
+                let recordTime = 0;
+                const recordFps = 30;
+                const interval = 1000 / recordFps;
+
+                function recordStep() {
+                    if (recordTime >= totalDuration) {
+                        recorder.stop();
+                        return;
+                    }
+
+                    drawFrame(recordTime);
+                    
+                    // Show progress percent
+                    const pct = Math.floor((recordTime / totalDuration) * 100);
+                    statusMsg.textContent = `A processar fotogramas: ${pct}%`;
+
+                    recordTime += interval;
+                    setTimeout(recordStep, interval);
+                }
+
+                // Launch step recording loop
+                setTimeout(recordStep, 100);
+            });
+
+            // Initialize first frame
             showScene(0);
         });
     </script>
