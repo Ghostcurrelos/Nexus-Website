@@ -1,4 +1,4 @@
-/* Nexus Light Theme Custom Stylesheet */
+﻿/* Nexus Light Theme Custom Stylesheet */
 
 /* --- Custom Variables & Theme --- */
 :root {
@@ -100,6 +100,7 @@ img {
     z-index: -2;
     pointer-events: none;
     filter: blur(80px);
+    will-change: transform;
 }
 
 .bg-glow-2 {
@@ -113,6 +114,7 @@ img {
     z-index: -2;
     pointer-events: none;
     filter: blur(80px);
+    will-change: transform;
 }
 
 .bg-grid {
@@ -139,6 +141,7 @@ img {
     background-image: repeating-linear-gradient(-45deg, rgba(184, 144, 28, 0.015) 0px, rgba(184, 144, 28, 0.015) 1px, transparent 1px, transparent 15px);
     z-index: -4;
     pointer-events: none;
+    will-change: transform;
 }
 
 /* --- Utility Components --- */
@@ -1775,3 +1778,9 @@ section {
 
 }
 
+
+/* --- Parallax Smooth Animation Wrappers --- */
+.logo-parallax-wrapper {
+    will-change: transform;
+    transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1);
+}

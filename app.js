@@ -33,13 +33,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. Navbar Scroll Behavior
+    // 2. Navbar Scroll Behavior & Background/Logo Parallax
     const navbar = document.getElementById('navbar');
+    const bgGlow1 = document.querySelector('.bg-glow-1');
+    const bgGlow2 = document.querySelector('.bg-glow-2');
+    const bgStripes = document.querySelector('.bg-stripes');
+    const logoParallax = document.querySelector('.logo-parallax-wrapper');
+
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
+        const scrolled = window.scrollY;
+        
+        // Navbar Scrolled State
+        if (scrolled > 50) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
+        }
+
+        // Parallax Scroll for Background Elements
+        if (bgGlow1) {
+            bgGlow1.style.transform = `translate3d(0, ${scrolled * 0.15}px, 0)`;
+        }
+        if (bgGlow2) {
+            bgGlow2.style.transform = `translate3d(0, ${-scrolled * 0.12}px, 0)`;
+        }
+        if (bgStripes) {
+            bgStripes.style.transform = `translate3d(0, ${scrolled * 0.08}px, 0)`;
+        }
+
+        // Hero Logo Parallax
+        if (logoParallax) {
+            const scale = Math.max(0.85, 1 - scrolled * 0.0004);
+            const translateY = scrolled * 0.22;
+            logoParallax.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
         }
     });
 
